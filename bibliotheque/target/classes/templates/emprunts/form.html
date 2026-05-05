@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head><title>Nouvel Emprunt</title></head>
+
+<body>
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 col-xl-7">
+
+            <div class="d-flex align-items-center mb-4 gap-3">
+                <a th:href="@{/emprunts}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Retour
+                </a>
+                <h1 class="h4 fw-bold mb-0">
+                    <i class="bi bi-arrow-bar-right text-warning me-2"></i>Nouvel Emprunt
+                </h1>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form th:action="@{/emprunts/nouveau}" method="post">
+
+                        <!-- Sélection Livre -->
+                        <div class="mb-3">
+                            <label for="livreId" class="form-label fw-semibold">
+                                <i class="bi bi-journal-bookmark me-1 text-primary"></i>
+                                Livre <span class="text-danger">*</span>
+                            </label>
+                            <select id="livreId" name="livreId" class="form-select" required>
+                                <option value="" disabled selected>-- Choisir un livre disponible --</option>
+                                <option th:each="livre : ${livres}"
+                                        th:value="${livre.id}"
+                                        th:text="${livre.titre + ' — ' + (livre.auteur ?: 'Auteur inconnu') + ' (dispo: ' + livre.quantiteDisponible + ')'}"
+                                        th:disabled="${livre.quantiteDisponible == 0}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Sélection Membre -->
+                        <div class="mb-3">
+                            <label for="membreId" class="form-label fw-semibold">
+                                <i class="bi bi-person me-1 text-success"></i>
+                                Membre <span class="text-danger">*</span>
+                            </label>
+                            <select id="membreId" name="membreId" class="form-select" required>
+                                <option value="" disabled selected>-- Choisir un membre actif --</option>
+                                <option th:each="membre : ${membres}"
+                                        th:value="${membre.id}"
+                                        th:text="${membre.prenom + ' ' + membre.nom + ' (' + membre.email + ')'}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Date de retour prévue -->
+                        <div class="mb-4">
+                            <label for="dateRetourPrevue" class="form-label fw-semibold">
+                                <i class="bi bi-calendar-event me-1 text-danger"></i>
+                                Date de retour prévue <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" id="dateRetourPrevue" name="dateRetourPrevue"
+                                   class="form-control"
+                                   th:attr="min=${dateMin}"
+                                   required/>
+                            <div class="form-text">La date doit être postérieure à aujourd'hui.</div>
+                        </div>
+
+                        <!-- Info box -->
+                        <div class="alert alert-info d-flex gap-2 mb-4 py-2">
+                            <i class="bi bi-info-circle-fill mt-1 flex-shrink-0"></i>
+                            <small>
+                                La quantité disponible du livre sera automatiquement décrémentée.
+                                Le statut de l'emprunt sera mis à jour chaque nuit.
+                            </small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning text-dark fw-semibold">
+                                <i class="bi bi-check-lg me-1"></i>Créer l'emprunt
+                            </button>
+                            <a th:href="@{/emprunts}" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

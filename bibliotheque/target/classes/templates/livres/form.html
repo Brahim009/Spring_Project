@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head><title th:text="${pageTitle}">Formulaire Livre</title></head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 col-xl-6">
+
+            <div class="d-flex align-items-center mb-4 gap-3">
+                <a th:href="@{/livres}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Retour
+                </a>
+                <h1 class="h4 fw-bold mb-0" th:text="${pageTitle}"></h1>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form th:action="${livre.id != null ? '/livres/edit/' + livre.id : '/livres/nouveau'}"
+                          th:object="${livre}" method="post" novalidate>
+
+                        <!-- Titre -->
+                        <div class="mb-3">
+                            <label for="titre" class="form-label fw-semibold">
+                                Titre <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" id="titre" th:field="*{titre}"
+                                   class="form-control" th:classappend="${#fields.hasErrors('titre')} ? 'is-invalid'"
+                                   placeholder="Titre du livre"/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('titre')}"
+                                 th:errors="*{titre}"></div>
+                        </div>
+
+                        <!-- Auteur -->
+                        <div class="mb-3">
+                            <label for="auteur" class="form-label fw-semibold">Auteur</label>
+                            <input type="text" id="auteur" th:field="*{auteur}"
+                                   class="form-control" placeholder="Nom de l'auteur"/>
+                        </div>
+
+                        <!-- ISBN -->
+                        <div class="mb-3">
+                            <label for="isbn" class="form-label fw-semibold">ISBN</label>
+                            <input type="text" id="isbn" th:field="*{isbn}"
+                                   class="form-control" placeholder="978-X-XXXX-XXXX-X"/>
+                        </div>
+
+                        <!-- Catégorie -->
+                        <div class="mb-3">
+                            <label for="categorie" class="form-label fw-semibold">Catégorie</label>
+                            <select id="categorie" th:field="*{categorie}" class="form-select">
+                                <option value="">-- Choisir --</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Mathématiques">Mathématiques</option>
+                                <option value="Physique">Physique</option>
+                                <option value="Chimie">Chimie</option>
+                                <option value="Biologie">Biologie</option>
+                                <option value="Littérature">Littérature</option>
+                                <option value="Histoire">Histoire</option>
+                                <option value="Géographie">Géographie</option>
+                                <option value="Droit">Droit</option>
+                                <option value="Économie">Économie</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+
+                        <!-- Quantités -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <label for="quantiteTotal" class="form-label fw-semibold">
+                                    Quantité totale <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" id="quantiteTotal" th:field="*{quantiteTotal}"
+                                       class="form-control" min="0"/>
+                            </div>
+                            <div class="col-6">
+                                <label for="quantiteDisponible" class="form-label fw-semibold">
+                                    Quantité disponible <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" id="quantiteDisponible" th:field="*{quantiteDisponible}"
+                                       class="form-control" min="0"/>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>Enregistrer
+                            </button>
+                            <a th:href="@{/livres}" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

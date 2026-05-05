@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+
+<head><title>Emprunts</title></head>
+
+<body>
+<div layout:fragment="content">
+
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                <i class="bi bi-arrow-left-right text-warning me-2"></i>Gestion des Emprunts
+            </h1>
+            <p class="text-muted mb-0"
+               th:text="'Total : ' + ${empruntsPage.totalElements} + ' emprunt(s)'"></p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/emprunts/export/csv}" sec:authorize="hasRole('ADMIN')"
+               class="btn btn-outline-secondary" title="Exporter CSV">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i>CSV
+            </a>
+            <a th:href="@{/emprunts/nouveau}" sec:authorize="hasRole('ADMIN')"
+               class="btn btn-warning text-dark">
+                <i class="bi bi-plus-lg me-1"></i>Nouvel emprunt
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body py-2 px-3">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="fw-semibold small text-muted me-1">Filtrer :</span>
+                <a th:href="@{/emprunts}"
+                   class="btn btn-sm"
+                   th:classappend="${statutFiltre == null} ? 'btn-dark' : 'btn-outline-secondary'">
+                    Tous
+                </a>
+                <a th:href="@{/emprunts(statut='EN_COURS')}"
+                   class="btn btn-sm"
+                   th:classappend="${statutFiltre?.name() == 'EN_COURS'} ? 'btn-primary' : 'btn-outline-primary'">
+                    <i class="bi bi-hourglass-split me-1"></i>En cours
+                </a>
+                <a th:href="@{/emprunts(statut='RENDU')}"
+                   class="btn btn-sm"
+                   th:classappend="${statutFiltre?.name() == 'RENDU'} ? 'btn-success' : 'btn-outline-success'">
+                    <i class="bi bi-check-circle me-1"></i>Rendus
+                </a>
+                <a th:href="@{/emprunts(statut='EN_RETARD')}"
+                   class="btn btn-sm"
+                   th:classappend="${statutFiltre?.name() == 'EN_RETARD'} ? 'btn-danger' : 'btn-outline-danger'">
+                    <i class="bi bi-exclamation-circle me-1"></i>En retard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Membre</th>
+                        <th>Livre</th>
+                        <th>Date emprunt</th>
+                        <th>Retour prévu</th>
+                        <th>Retour effectif</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-center" sec:authorize="hasRole('ADMIN')">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${empruntsPage.empty}">
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>Aucun emprunt trouvé.
+                        </td>
+                    </tr>
+                    <tr th:each="emprunt : ${empruntsPage.content}">
+                        <td class="text-muted small" th:text="${emprunt.id}"></td>
+                        <td>
+                            <div class="fw-semibold"
+                                 th:text="${emprunt.membre.prenom + ' ' + emprunt.membre.nom}"></div>
+                            <small class="text-muted" th:text="${emprunt.membre.email}"></small>
+                        </td>
+                        <td>
+                            <div class="fw-semibold" th:text="${emprunt.livre.titre}"></div>
+                            <small class="text-muted" th:text="${emprunt.livre.auteur}"></small>
+                        </td>
+                        <td th:text="${#temporals.format(emprunt.dateEmprunt, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:text="${#temporals.format(emprunt.dateRetourPrevue, 'dd/MM/yyyy')}"
+                                  th:classappend="${emprunt.statut.name() == 'EN_RETARD'} ? 'text-danger fw-semibold'">
+                            </span>
+                        </td>
+                        <td th:text="${emprunt.dateRetourEffective != null ?
+                            #temporals.format(emprunt.dateRetourEffective, 'dd/MM/yyyy') : '—'}">
+                        </td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill px-3 py-2"
+                                  th:classappend="${emprunt.statut.name() == 'EN_COURS'} ? 'bg-primary' :
+                                                  (${emprunt.statut.name() == 'RENDU'} ? 'bg-success' : 'bg-danger')"
+                                  th:text="${emprunt.statut.name() == 'EN_COURS'} ? 'En cours' :
+                                           (${emprunt.statut.name() == 'RENDU'} ? 'Rendu' : 'En retard')">
+                            </span>
+                        </td>
+                        <td class="text-center" sec:authorize="hasRole('ADMIN')">
+                            <a th:if="${emprunt.statut.name() != 'RENDU'}"
+                               th:href="@{/emprunts/retour/{id}(id=${emprunt.id})}"
+                               class="btn btn-sm btn-outline-success"
+                               title="Enregistrer le retour"
+                               onclick="return confirm('Confirmer le retour de ce livre ?')">
+                                <i class="bi bi-box-arrow-in-down me-1"></i>Retour
+                            </a>
+                            <span th:if="${emprunt.statut.name() == 'RENDU'}"
+                                  class="text-muted small">—</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer d-flex justify-content-between align-items-center"
+             th:if="${empruntsPage.totalPages > 1}">
+            <small class="text-muted">
+                Page <span th:text="${empruntsPage.number + 1}"></span>
+                sur <span th:text="${empruntsPage.totalPages}"></span>
+            </small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item" th:classappend="${empruntsPage.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/emprunts(page=${empruntsPage.number - 1}, statut=${statutFiltre})}">
+                            <i class="bi bi-chevron-left"></i></a>
+                    </li>
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, empruntsPage.totalPages - 1)}"
+                        th:classappend="${i == empruntsPage.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/emprunts(page=${i}, statut=${statutFiltre})}"
+                           th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${empruntsPage.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/emprunts(page=${empruntsPage.number + 1}, statut=${statutFiltre})}">
+                            <i class="bi bi-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+</body>
+</html>

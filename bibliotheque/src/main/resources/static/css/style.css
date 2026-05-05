@@ -1,0 +1,147 @@
+/* --- Design System & Custom Styles --- */
+:root {
+    --primary-color: #4f46e5;
+    --primary-dark: #4338ca;
+    --secondary-color: #64748b;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --dark-bg: #1e293b;
+    --light-bg: #f8fafc;
+    --font-family: 'Inter', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--light-bg);
+    color: #1e293b;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar Customization */
+#mainNavbar {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    letter-spacing: -0.025em;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.2s;
+    border-radius: 0.5rem;
+    margin: 0 0.2rem;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff !important;
+}
+
+.nav-link.active {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+}
+
+/* Avatar Circle */
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* KPI Cards */
+.kpi-card {
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.kpi-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.kpi-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Tables */
+.table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: none;
+}
+
+.table tbody td {
+    padding: 1rem 0.75rem;
+}
+
+/* Forms */
+.form-label {
+    color: #475569;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Buttons */
+.btn {
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* Badges */
+.badge {
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+}
+
+/* Footer */
+.footer {
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;
+}
